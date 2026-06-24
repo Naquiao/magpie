@@ -11,6 +11,8 @@ source taxonomy, and page templates. Everything below is generic; `BRAIN.md` spe
 ## 1. The three zones
 - **`raw/`** — input the human dumps. Append-only, unorganized. You READ it, never depend
   on its structure. Subfolders: `papers/ articles/ repos/ images/ notes/`.
+  arXiv papers arrive as Obsidian Web Clipper captures (a `.md` with a `source:` arXiv URL in
+  its frontmatter). PDFs are read directly by you (the compiler) — there is no PDF-to-text step.
 - **`wiki/`** — your output. 100% authored by you. Markdown + `[[wikilinks]]`.
   - `index.md` — master map of the whole brain. You keep it current.
   - `concepts/`, `systems/`, `comparisons/` — articles (see `BRAIN.md` for which types apply).
@@ -23,6 +25,11 @@ source taxonomy, and page templates. Everything below is generic; `BRAIN.md` spe
 
 ### `compile` / "ingest raw" / "update the wiki"
 Incremental. Do NOT reprocess everything.
+0. **Resolve arXiv clips:** for each `.md` in `raw/papers/` whose frontmatter `source` is an
+   arXiv URL (an Obsidian Web Clipper capture, often with empty title/body), run
+   `python scripts/ingest_arxiv.py <source>` to download the PDF and write a `<id>.md`
+   metadata stub, then delete the original clip file. When you need full detail, read the
+   `<id>.pdf` directly (you can read PDF content natively — no parsing script).
 1. Diff `raw/` against `wiki/_meta/sources.md` to find new or changed files.
 2. For each new/changed source:
    a. Write a 1-line summary stub in `sources.md` (path → what it is, in one sentence).
