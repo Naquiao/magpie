@@ -2,3 +2,5 @@ brains/.DS_Store
 .obsidian
 .venv/
 *.pdf
+images/
+notes/
