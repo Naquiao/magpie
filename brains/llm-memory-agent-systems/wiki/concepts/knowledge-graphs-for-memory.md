@@ -22,9 +22,19 @@ memory navigable as it grows, and the structure powers multi-hop reasoning.
 - **Entity-linking layer over retrieval** — [[mem0]]: entities (proper nouns, quoted text, compound
   noun phrases) are embedded into a separate lookup layer; query entities are matched against it and
   relevant memories get a ranking boost.
+- **Full graph store** — Mem0ᵍ ([[mem0]]'s graph variant): a Neo4j directed labeled graph (entities
+  as typed nodes, relationships as labeled edges) with conflict detection that marks superseded
+  edges **obsolete rather than deleting** them — strongest on temporal/open-domain LoCoMo categories.
+- **LLM-linked note graph** — [[a-mem]]: each memory is an atomic note the LLM links to related notes
+  (causal/conceptual, beyond cosine similarity), and new notes can rewrite linked notes' attributes.
+
+- **Temporal KG** — [[zep]]/Graphiti: a bi-temporal Context Graph (entity/edge extraction with
+  relationship-lifecycle metadata + fact invalidation); hybrid semantic+BM25+graph search.
 
 ## Which systems use it
-- [[gbrain]] — self-wiring typed-edge graph (deterministic). [[mem0]] — entity-linking lookup layer.
+- [[gbrain]] — self-wiring typed-edge graph (deterministic). [[mem0]] — entity-linking lookup layer +
+  Mem0ᵍ Neo4j graph. [[a-mem]] — LLM-linked, self-evolving note graph. [[zep]] — bi-temporal Context
+  Graph (Graphiti).
 
 ## Open questions
 - **Deterministic typed-edge extraction (GBrain, zero LLM) vs. LLM-inferred links: precision/recall
@@ -39,3 +49,7 @@ memory navigable as it grows, and the structure powers multi-hop reasoning.
   — entity linking layer and entity-match ranking boost.
 - `raw/articles/memory/Retrieval-Augmented Generation A Comprehensive Survey...md`
   — GraphRAG / KG-RAG: entity-centric graphs + community summarization improve multi-hop recall.
+- `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
+  — Mem0ᵍ Neo4j graph: entity/relationship extraction, conflict detection, obsolete-marking.
+- `raw/papers/A-Mem Agentic Memory for LLM Agents.md`
+  — Zettelkasten note graph: LLM link generation + memory evolution.

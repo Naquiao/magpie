@@ -33,9 +33,14 @@ the project's open question on contradicting facts (see `_meta/open-questions.md
 - **Index hot-swapping** — [[vector-rag]]: the original RAG paper (Lewis et al. 2020) updated world
   knowledge simply by swapping the non-parametric index (2016→2018 Wikipedia), no retraining — the
   cleanest illustration of why retrieval beats parametric memory on staleness.
-- **Temporal knowledge graphs** — **Zep** (arXiv 2501.13956) builds a *temporal* knowledge graph for
-  agent memory (bi-temporal edges that can be invalidated as facts change). The brain still lacks a
-  full Zep source — see `_meta/open-questions.md` — but this is the named pointer to ingest.
+- **Obsolete-marking in a graph** — Mem0ᵍ ([[mem0]]'s graph variant): when new info conflicts with an
+  existing relationship, an LLM resolver **marks the old edge invalid rather than deleting it**,
+  enabling temporal reasoning. Mem0ᵍ was the paper's strongest variant on temporal LoCoMo (J 58.1).
+- **Bi-temporal graph + edge invalidation** — [[zep]]/Graphiti: a temporal Context Graph where edges
+  carry lifecycle metadata; when a fact changes, the old edge is **marked invalid (not deleted)**,
+  enabling point-in-time queries. The most explicit contradiction-handling model among the tracked
+  systems. (The [[mem0]] paper, a competitor, reports Zep strong on open-domain LoCoMo J 76.6 but
+  using 600K+ graph tokens with slow async construction — a rival's measurement.)
 - **Forgetting curves** — MemoryBank (AAAI 2024) decays memories on an Ebbinghaus schedule (see
   [[memory-consolidation]]).
 
@@ -59,3 +64,5 @@ the project's open question on contradicting facts (see `_meta/open-questions.md
   — index hot-swapping to update knowledge without retraining (Lewis et al. 2020).
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — Zep temporal KG, MemoryBank forgetting curve, in-context-editing-beats-parameter-editing.
+- `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
+  — Mem0ᵍ obsolete-marking for temporal reasoning; competitor-reported Zep numbers.

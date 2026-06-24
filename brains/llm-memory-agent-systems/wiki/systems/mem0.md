@@ -25,6 +25,16 @@ and channels as long as the app resolves a stable `user_id`. Extraction and retr
 **hierarchical memory** where layers (sentence-level, entity-level, and planned behavioral-pattern
 matching) are scored in parallel and fused. See [[hybrid-retrieval]] and [[knowledge-graphs-for-memory]].
 
+**Two generations of the pipeline** (note the evolution — same product, redesigned algorithm):
+- *2025 paper (arXiv 2504.19413):* a two-phase **extract → update** pipeline. Extraction uses a
+  rolling conversation summary + recent messages to pull candidate facts; the update phase retrieves
+  the top-s similar memories and an LLM **tool call** picks one of **ADD / UPDATE / DELETE / NOOP**
+  per fact (reconciling against existing memory).
+- *2026 "token-efficient" redesign:* collapses this into **single-pass ADD-only** extraction (below).
+- **Mem0ᵍ (graph variant):** stores memories as a Neo4j directed labeled graph (entities as nodes,
+  typed relationships as edges); a conflict-detection step marks superseded relationships **obsolete
+  rather than deleting** them, enabling temporal reasoning. See [[knowledge-graphs-for-memory]].
+
 ## Store / Retrieve / Update / Forget
 - **Store:** `mem0.add()` extracts semantic facts and discards conversational scaffolding (e.g.
   "User reported missing order #1234", "prefers email over SMS"). As of the April 2026 algorithm,
@@ -36,8 +46,10 @@ matching) are scored in parallel and fused. See [[hybrid-retrieval]] and [[knowl
   top-k into the system prompt. ~100–200ms.
 - **Update:** **single-pass, ADD-only extraction** (April 2026) — one LLM call that only adds; every
   fact is an independent record, so a changed fact lives **alongside** the old one and both survive
-  (preserving the full history of state changes). This replaced the old two-pass ADD/UPDATE/DELETE
-  reconciliation, which was slow and destroyed context. See [[temporal-knowledge-and-decay]].
+  (preserving the full history of state changes). This replaced the **2025 paper's** two-pass
+  reconciliation, where an LLM tool call chose ADD/UPDATE/DELETE/NOOP per fact — slow and prone to
+  destroying context via overwrites/deletes. (Mem0ᵍ instead marks graph edges obsolete.) See
+  [[temporal-knowledge-and-decay]].
 - **Forget:** ADD-only deliberately avoids deletion/overwrite to retain history; explicit
   decay/expiry policies are not described by the current sources.
 
@@ -56,9 +68,16 @@ matching) are scored in parallel and fused. See [[hybrid-retrieval]] and [[knowl
 As-of 2026-06-24: Managed platform (free tier at app.mem0.ai) + **self-hostable via Docker** with an
 identical API; OSS SDK on GitHub (`mem0ai`, Node SDK pinned `^2.1.40` in the reference tutorial).
 The token-efficient algorithm (April 2026) is live on both platform and SDK and reports LoCoMo 91.6,
-LongMemEval 93.4, BEAM 64.1 (1M) / 48.6 (10M) at <7K tokens/query; eval framework is open-source.
+LongMemEval 93.4, BEAM 64.1 (1M) / 48.6 (10M) at <7K tokens/query; eval framework is open-source. The
+earlier 2025 paper reported, on LoCoMo (LLM-as-Judge): Mem0 **66.9** / Mem0ᵍ **68.4** overall, beating
+Zep (66.0), OpenAI memory (52.9) and all RAG configs, and trailing only full-context (72.9) while
+cutting **p95 latency ~91%** (1.44s vs 17.1s) and using ~7K tokens (vs Mem0ᵍ 14K, Zep 600K+). See
+[[memory-evaluation]].
 
 ## Sources
+- `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
+  (arXiv 2504.19413, Chhikara et al. 2025) — the academic paper: extract→update pipeline,
+  ADD/UPDATE/DELETE/NOOP, Mem0ᵍ Neo4j graph variant, LoCoMo results vs Zep/RAG/full-context.
 - `raw/articles/memory/Introducing The Token-Efficient Memory Algorithm.md`
   — single-pass ADD-only extraction, entity linking, multi-signal retrieval, benchmark results.
 - `raw/articles/memory/Memory Poisoning in AI Agents How Bad Inputs Corrupt Agent Memory.md`

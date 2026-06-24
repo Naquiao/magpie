@@ -34,6 +34,13 @@ production. Good evaluation is how you tell a real memory improvement from a big
   **48.6** (10M), averaging **<7K tokens/query** vs. 25K+ for full-context. Managed-platform numbers
   include proprietary optimizations beyond the OSS SDK; eval framework is open-source.
 - [[gbrain]]: **P@5 49.1%, R@5 97.9%** on a 240-page rich-prose corpus, **+31.4 P@5** from the graph.
+- [[mem0]] paper (2025), LoCoMo overall LLM-as-Judge — a rare apples-to-apples table on one corpus:
+  full-context **72.9** (but p95 latency 17.1s) > Mem0ᵍ **68.4** > Mem0 **66.9** > Zep **66.0** >
+  best RAG ~61 > OpenAI memory **52.9** > A-Mem* **48.4**. Mem0's p95 latency was **1.44s** (~91%
+  lower than full-context). Caveat: self-reported by Mem0; baselines are their measurements.
+- [[zep]] (self-reported): LoCoMo **94.7%** accuracy @155ms; LongMemEval **90.2%** @162ms. **Metric
+  mismatch warning:** Zep's "accuracy" and Mem0's LLM-as-Judge "~66 for Zep" are different
+  metrics/harnesses on the same dataset — a vivid example of why cross-vendor numbers don't compare.
 
 ## Which systems use it
 - [[mem0]] — LoCoMo / LongMemEval / BEAM. [[gbrain]] — BrainBench / NamedThingBench / LongMemEval.
@@ -51,3 +58,7 @@ production. Good evaluation is how you tell a real memory improvement from a big
   — BrainBench / NamedThingBench / LongMemEval eval framework and P@5/R@5 numbers.
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — LoCoMo provenance + human gap, and memory-action benchmarks (MemBench / MemoryArena).
+- `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
+  — LoCoMo head-to-head (Mem0/Mem0ᵍ vs Zep/OpenAI/RAG/full-context) on F1/BLEU-1/LLM-as-Judge + latency.
+- `raw/papers/A-Mem Agentic Memory for LLM Agents.md`
+  — LoCoMo + DialSim results vs MemGPT/MemoryBank/ReadAgent across six foundation models.

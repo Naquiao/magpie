@@ -29,10 +29,13 @@ answers. Running it offline keeps the latency-sensitive request path cheap.
   from the memory stream; ablating reflection degraded coherent behavior within ~48 simulated hours.
 - **Learned forgetting** — MemoryBank (AAAI 2024) applies an **Ebbinghaus forgetting curve** to decay
   memories over time (vs. the heuristic forget rules elsewhere).
+- **Memory evolution** — [[a-mem]]: adding a new note triggers the LLM to **rewrite the attributes
+  (context/keywords/tags) of linked existing notes** — consolidation as a continuous side-effect of
+  writing, not a separate batch pass.
 
 ## Which systems use it
 - [[gbrain]] — cron dream cycle. [[letta]] — sleep-time reflection + defragmentation.
-  [[mem0]] — async extraction/retrieval.
+  [[mem0]] — async extraction/retrieval. [[a-mem]] — write-triggered memory evolution.
 
 ## Open questions
 - How aggressive should consolidation be before it destroys recoverable detail? (Letta's ADD-then-
@@ -49,3 +52,6 @@ answers. Running it offline keeps the latency-sensitive request path cheap.
 - `raw/articles/memory/Introducing The Token-Efficient Memory Algorithm.md` — async extraction.
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — Thread 4: Generative Agents reflection, MemoryBank Ebbinghaus forgetting, consolidation as open problem.
+- `raw/papers/Generative Agents Interactive Simulacra of Human Behavior.md` — reflection synthesizes
+  higher-level insights; ablation showed it is critical to believable behavior.
+- `raw/papers/A-Mem Agentic Memory for LLM Agents.md` — memory evolution (new notes update old ones).

@@ -41,11 +41,13 @@ problem this loop solves.
   disclosure), with sleep-time reflection persisting learnings asynchronously.
 
 2026 agent-memory surveys formalize this as a **write–manage–read loop** (Du 2026, POMDP framing).
-Landmark designs: **Generative Agents** (Park, UIST 2023) — a *memory stream* scored by recency +
-importance + relevance, plus reflection; **A-MEM** (NeurIPS 2025) — Zettelkasten atomic notes that
-self-link into a living graph; **Memory-R1** (2025) — an RL-trained Memory Manager (ADD/UPDATE/
-DELETE/NOOP) that beats Mem0 with only ~152 training examples. See [[memory-consolidation]] and
-[[memory-evaluation]].
+Landmark designs: **Generative Agents** (Park, UIST 2023) — a *memory stream* of natural-language
+observations, retrieved by a score combining **recency + importance + relevance**, plus reflection
+and planning (its 25-agent Smallville sim showed emergent social behavior; ablating any of
+observation/planning/reflection hurt believability); **[[a-mem]]** (NeurIPS 2025) — Zettelkasten
+atomic notes that self-link into a living graph; **Memory-R1** (2025) — an RL-trained Memory Manager
+(ADD/UPDATE/DELETE/NOOP) that beats Mem0 with only ~152 training examples. See [[memory-consolidation]]
+and [[memory-evaluation]].
 
 ## Open questions
 - How should the loop reconcile a newly stored fact that **contradicts** an older one? (See
@@ -58,5 +60,7 @@ DELETE/NOOP) that beats Mem0 with only ~152 training examples. See [[memory-cons
   — Next.js + Mem0 tutorial laying out the search-before / store-after sequence explicitly.
 - `raw/articles/memory/garrytangbrain Garry's Opinionated OpenClawHermes Agent Brain.md`
   — GBrain's brain-first signal→search→respond→write→auto-link→sync loop.
+- `raw/papers/Generative Agents Interactive Simulacra of Human Behavior.md` (arXiv 2304.03442, Park
+  et al. 2023) — memory stream + recency/importance/relevance retrieval + reflection.
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — Thread 4: write–manage–read loop surveys, Generative Agents, A-MEM, Memory-R1.

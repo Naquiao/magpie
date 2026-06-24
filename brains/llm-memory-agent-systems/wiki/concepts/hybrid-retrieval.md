@@ -30,6 +30,8 @@ retrieval side of [[context-vs-retrieval]].
 ## Which systems use it
 - [[gbrain]] — vector + BM25 + RRF + reranker + graph signals.
 - [[mem0]] — semantic + keyword + entity multi-signal fusion.
+- [[zep]]/Graphiti — vector + BM25 full-text + graph traversal fused into one ranked answer with **no
+  LLM-in-the-loop reranking**; optional rerank by distance from a central node.
 
 ## Open questions
 - How much of the accuracy gain is fusion vs. the reranker vs. the graph signal? (GBrain attributes

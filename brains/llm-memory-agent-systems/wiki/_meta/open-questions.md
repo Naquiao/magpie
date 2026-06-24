@@ -39,9 +39,13 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
   parameter editing causes catastrophic forgetting; AlphaEdit (null-space) pushes the limit but
   doesn't remove it, and RippleEdits found in-context editing beats parameter editing. Folded into
   [[model-editing]]. Still open: whether *any* parameter-editing scheme is safe at true lifelong scale.
-- **Ingest Zep / Graphiti.** [[gbrain]] / [[mem0]] / [[letta]] are covered, but **Zep** (temporal
-  knowledge graph, arXiv 2501.13956) — a seed system and arguably the most relevant one for the
-  contradicting-facts question — still has no source. Ingest the Zep paper for a full `systems/zep.md`.
+- **Cross-vendor benchmark numbers don't compare.** Same dataset (LoCoMo), incompatible metrics:
+  [[zep]] self-reports **94.7% accuracy**; the [[mem0]] paper scores Zep at **LLM-as-Judge ~66**.
+  Need a neutral, single-harness evaluation across [[mem0]]/[[zep]]/[[a-mem]]/[[letta]] before
+  trusting any ranking. See [[memory-evaluation]].
+- **LINT — removed source.** `papers/2002.08910.md` (Roberts et al. 2020, closed-book QA) was deleted
+  from `raw/` but is still cited by [[in-weights-vs-in-context]] and `sources.md`. The claims remain
+  arXiv-citable; decide whether to keep (re-citing arXiv) or prune. Left intact pending a call.
 - **Agent-memory write-path security.** Beyond corpus poisoning ([[vector-rag]]), the 2026 map points
   to SSGM (stability/safety-governed memory) and memory-security surveys — candidates to ground the
   still-open *agent-written-memory* poisoning gap above.
@@ -60,3 +64,6 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
 - **Long-context vs. RAG** (cross-cutting) — answered: long context does *not* obviate retrieval
   (Lost-in-the-Middle, Context Rot); **hybrid** (retrieve-then-long-context-reason) is the 2026
   default. Folded into [[context-vs-retrieval]].
+- **Zep coverage** (asked 2026-06-24) — answered: a primary Zep/Graphiti doc was ingested →
+  [[zep]] now exists (bi-temporal Context Graph, fact invalidation, hybrid search). The old
+  "no Zep source" gap is closed; what remains is the cross-vendor metric question above.

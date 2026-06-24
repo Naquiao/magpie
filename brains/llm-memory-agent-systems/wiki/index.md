@@ -21,6 +21,8 @@ Master map of this brain. The compiler keeps this current. Read this first for a
 - [[mem0]] — managed/self-hostable semantic memory layer scoped by `user_id`; token-efficient ADD-only.
 - [[letta]] — memory-native agents (MemGPT lineage) with a git-versioned memory filesystem.
 - [[gbrain]] — self-hosted brain: hybrid retrieval + self-wiring graph + dream cycle + synthesis.
+- [[a-mem]] — Zettelkasten agentic memory: atomic notes that auto-link and self-evolve.
+- [[zep]] — enterprise agent memory on Graphiti: bi-temporal Context Graph + hybrid search.
 
 ## Comparisons
 _(none yet)_
