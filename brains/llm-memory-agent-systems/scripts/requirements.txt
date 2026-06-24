@@ -1,0 +1,2 @@
+# ingest_arxiv.py uses the Python 3 standard library only — no installs needed.
+# Add deps here if you extend the scripts (e.g. pymupdf for full PDF->markdown).
