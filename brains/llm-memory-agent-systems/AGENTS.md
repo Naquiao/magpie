@@ -19,6 +19,7 @@ source taxonomy, and page templates. Everything below is generic; `BRAIN.md` spe
   - `_meta/sources.md` — one line per file in `raw/`. **This is the retrieval index.**
   - `_meta/open-questions.md` — research backlog you maintain.
   - `_meta/log.md` — append-only record of compiles / asks / lints / write-backs (+ PR links).
+  - `_meta/ignore.md` — rejected `raw/` sources the compiler skips (auto-populated when a compile PR is closed).
 - **`outputs/`** — renders from queries (`slides/` Marp decks, `figures/` matplotlib).
   Good outputs get filed back into `wiki/`.
 
@@ -31,14 +32,17 @@ Incremental. Do NOT reprocess everything.
    `python scripts/ingest_arxiv.py <source>` to download the PDF and write a `<id>.md`
    metadata stub, then delete the original clip file. When you need full detail, read the
    `<id>.pdf` directly (you can read PDF content natively — no parsing script).
-1. Diff `raw/` against `wiki/_meta/sources.md` to find new or changed files.
+1. Diff `raw/` against `wiki/_meta/sources.md` to find new or changed files, then **subtract any
+   path listed in `wiki/_meta/ignore.md`** (rejected sources — see §6 "Reject reconciliation").
 2. For each new/changed source:
    a. Write a 1-line summary stub in `sources.md` (path → what it is, in one sentence).
    b. Classify it per the taxonomy in `BRAIN.md` (e.g. concept / system / evidence / noise).
    c. Create or update the relevant page(s) using the section template from `BRAIN.md`.
    d. Add `[[backlinks]]` to related pages so the graph self-wires.
 3. Update `index.md` (new pages, moved entries).
-4. Report what changed: pages created, pages updated, sources skipped.
+4. Report what changed: pages created, pages updated, sources skipped, and (for autonomous runs)
+   the exact `raw/` paths ingested — list them in the PR body so a later PR close can reconcile
+   them into `ignore.md`.
 
 ### `ask <question>`
 1. Read `index.md` + `_meta/sources.md` first — they tell you which pages are relevant.
@@ -113,6 +117,19 @@ Background **`lint`** (§2, weekly) keeps that growing store consolidated rather
 Any write the brain makes **on its own** — the daily `compile`, the weekly `lint`, a confirmed
 `evolve` — lands on a branch and surfaces as a **Pull Request**, never a direct push to `main`.
 The PR is the human-in-the-loop gate.
+- **Preflight — no pile-up:** before an autonomous run writes anything, it checks for an *open* PR
+  from its own operation (`gh pr list --state open --json number,headRefName,url`, heads
+  `brain/<op>-*`). If one is still open, the inbox isn't clear — **skip the run**: don't branch,
+  don't open a second PR; append a `log.md` line (`… — skipped: PR #N pending`) and let the
+  completion notification surface it. This stops the daily `compile` from re-detecting the same
+  `raw/` sources and re-proposing identical pages (the pending PR already holds them while `main`'s
+  `sources.md` lags until you merge). A *merged* PR is resolved → proceed normally.
+- **Reject reconciliation (persistent rejection):** closing a `brain/compile-*` PR instead of
+  merging it = rejecting the `raw/` sources it would have ingested. The compile preflight scans
+  recently *closed-unmerged* compile PRs and appends their ingested `raw/` paths to
+  `wiki/_meta/ignore.md` (idempotent — skips paths already listed); `compile` then excludes anything
+  in `ignore.md` from its diff (§2 step 1), so rejected sources are not re-proposed. The `ignore.md`
+  update rides on the next `brain/compile-*` PR. Un-reject a source by deleting its line in `ignore.md`.
 - **Branches:** `brain/compile-<YYYY-MM-DD>`, `brain/lint-<YYYY-MM-DD>`, `brain/writeback-<YYYY-MM-DD>`.
 - **PR body = the proposal:** one section per page/finding, each with its rationale and a trace to
   `raw/` or a cited web source. Flag *mutating* edits (rewrite / merge / delete of existing content) ⚠️.

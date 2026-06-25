@@ -32,5 +32,5 @@ Master map of this brain. The compiler keeps this current. Read this first for a
 _(none yet)_
 
 ---
-See `_meta/sources.md` for the source index, `_meta/open-questions.md` for the backlog, and
-`_meta/log.md` for the append-only run history (compiles / write-backs / lints).
+See `_meta/sources.md` for the source index, `_meta/open-questions.md` for the backlog,
+`_meta/log.md` for the append-only run history, and `_meta/ignore.md` for rejected sources.
