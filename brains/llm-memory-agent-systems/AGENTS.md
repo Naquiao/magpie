@@ -18,6 +18,7 @@ source taxonomy, and page templates. Everything below is generic; `BRAIN.md` spe
   - `concepts/`, `systems/`, `comparisons/` — articles (see `BRAIN.md` for which types apply).
   - `_meta/sources.md` — one line per file in `raw/`. **This is the retrieval index.**
   - `_meta/open-questions.md` — research backlog you maintain.
+  - `_meta/log.md` — append-only record of compiles / asks / lints / write-backs (+ PR links).
 - **`outputs/`** — renders from queries (`slides/` Marp decks, `figures/` matplotlib).
   Good outputs get filed back into `wiki/`.
 
@@ -46,15 +47,45 @@ Incremental. Do NOT reprocess everything.
 4. **State the gaps**: what the brain does NOT yet know, stale pages, contradictions found.
 5. If asked for a format, render it: a new `comparisons/*.md` article, a Marp deck in
    `outputs/slides/`, or a matplotlib figure in `outputs/figures/`. Offer to file good
-   outputs back into `wiki/` so the next query builds on them.
+   outputs back into `wiki/` via the `evolve` operation (below) so the next query builds on them.
+
+### `evolve` / "file this back" / write-back
+Closes the **write** half of the loop: durable synthesis from an `ask` becomes a wiki page so the
+next query stands on it (see `[[read-write-agent-loop]]`, `[[llm-compiled-wiki]]`). Trigger: at the
+end of an `ask` that produced something durable (a comparison, a new synthesis, or an answer that
+*resolves* an open question), or when the human says "file this back."
+1. **Identify the durable artifact** from the answer just given (comparison / figure / synthesis /
+   resolved open-question).
+2. **Novelty check** against existing pages (read `index.md` + `_meta/sources.md` per §4): is this
+   new, does it extend a page, or does it contradict one? Choose the target:
+   - a new `wiki/comparisons/<name>.md` (use the `BRAIN.md` template, incl. the "what the brain
+     doesn't know yet" section), **or**
+   - fold into an existing `concepts/`/`systems/` page (the "prefer editing" invariant), **or**
+   - move an `open-questions.md` bullet to **Answered (archive)** with the date and the source.
+3. **HITL — confirm inline.** Show a compact proposal: target file(s), the exact diff, backlinks to
+   add, and the `index.md` / `sources.md` / `open-questions.md` updates. Ask the human: apply / edit
+   / skip. (This gate prevents spurious PRs.)
+4. **On confirm:** branch `brain/writeback-<YYYY-MM-DD>`; apply the edits honoring the §3 invariants
+   (≥1 backlink, update `index.md` + `sources.md`, page template, `kebab-case.md`); append a line to
+   `_meta/log.md`; commit and open/update a PR (§6). Report the PR link — the **human merges** (2nd gate).
+5. **On skip:** discard; optionally drop a note in `open-questions.md`.
 
 ### `lint` / "audit the wiki"
-- Flag claims not backed by any file in `raw/` (or a cited web source).
-- Find pages that contradict each other.
-- Find stale pages (source updated, page not).
-- Impute missing data with a web search where allowed; mark it as web-sourced.
-- Propose new article candidates from connections across existing pages.
-- Append findings to `_meta/open-questions.md`. Do not silently rewrite — propose first.
+A consolidation / "dream cycle" pass (`[[memory-consolidation]]`): keep the wiki from rotting into
+duplicates, stale dates, broken citations, and contradictions. Runs weekly (§6) or on demand.
+1. Run checks across `wiki/` + `raw/`:
+   - claims not backed by any `raw/` file or a cited web source;
+   - pages that contradict each other;
+   - stale pages (source updated, page not; maturity / as-of dates past due);
+   - missing data — impute via web search where allowed, **mark it web-sourced**;
+   - new article candidates from connections across existing pages.
+2. **Classify each finding:** *additive-safe* (a new open-question bullet, a new backlink) vs
+   *mutating* (editing / merging / deleting existing page content).
+3. Apply the proposed changes on branch `brain/lint-<YYYY-MM-DD>` (additive-safe findings still go to
+   `open-questions.md`; never silently rewrite a page outside the branch).
+4. Open a PR whose body **is the proposal** — one section per finding, each with rationale +
+   traceability; flag every *mutating* change with ⚠️. Append a line to `_meta/log.md`.
+5. **Never merge.** The human reviews the diff on GitHub and merges or closes (the HITL gate).
 
 ## 3. Writing invariants (never break these)
 - **Traceability:** never assert a claim you can't trace to `raw/` or a cited web source.
@@ -74,5 +105,21 @@ docs), in which case propose it in `open-questions.md` first.
 
 ## 5. Compounding
 The point of this brain is that explorations "add up." When a query produces something good
-(a comparison, a figure, a synthesized article), file it back into `wiki/` so future queries
-stand on it. The brain should be smarter after every session.
+(a comparison, a figure, a synthesized article), file it back into `wiki/` via the **`evolve`**
+operation (§2) so future queries stand on it. The brain should be smarter after every session.
+Background **`lint`** (§2, weekly) keeps that growing store consolidated rather than rotting.
+
+## 6. Autonomous writes & human review (branches / PRs)
+Any write the brain makes **on its own** — the daily `compile`, the weekly `lint`, a confirmed
+`evolve` — lands on a branch and surfaces as a **Pull Request**, never a direct push to `main`.
+The PR is the human-in-the-loop gate.
+- **Branches:** `brain/compile-<YYYY-MM-DD>`, `brain/lint-<YYYY-MM-DD>`, `brain/writeback-<YYYY-MM-DD>`.
+- **PR body = the proposal:** one section per page/finding, each with its rationale and a trace to
+  `raw/` or a cited web source. Flag *mutating* edits (rewrite / merge / delete of existing content) ⚠️.
+- **Scope** the diff to `brains/llm-memory-agent-systems/` — this brain is a subdirectory of the
+  `magpie` repo, so branch from `main` and keep changes inside the brain's folder.
+- **Merge policy:** `compile` PRs are additive / low-risk (merge freely); `lint` and `evolve` PRs
+  always wait for a human merge. The brain never merges its own PR.
+- **Log:** every PR appends a line to `_meta/log.md` (`date — operation — summary — PR link`).
+- These operations run unattended as **cloud routines** (`/schedule`): `compile-daily` and
+  `lint-weekly`. Each routine cds into this brain's directory and follows the operation specs above.
