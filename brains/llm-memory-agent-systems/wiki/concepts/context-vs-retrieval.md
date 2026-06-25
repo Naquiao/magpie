@@ -56,6 +56,8 @@ The "RAG is obsolete, just paste everything" thesis (after 1M–10M token window
   two points on the same trade-off.
 - [[letta]] — pins only `system/` files to context and uses **progressive disclosure** to pull in
   the rest on demand, managing the context-vs-retrieval boundary explicitly.
+- [[claude-memory]] — applies both sides: a synthesized memory summary (compiled facts) injected each
+  session, plus on-demand **RAG search over past chats** (raw retrieval) surfaced as tool calls.
 
 ## Open questions
 - At what conversation length / cost does retrieval clearly beat context-stuffing? Largely settled in

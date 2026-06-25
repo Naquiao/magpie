@@ -27,6 +27,11 @@ Explicitly positioned against Microsoft's GraphRAG ([[vector-rag]]), which Zep a
 - **Custom entity types**; **pluggable backends** (Neo4j, FalkorDB, Amazon Neptune); LLM/embedding
   providers (OpenAI, Azure, Gemini, Anthropic). Parallelizes LLM calls for bulk ingest while
   preserving chronology.
+- **Context Block placement:** Zep assembles a per-message **Context Block** of topic-relevant memory.
+  Because it refreshes every turn, Zep recommends attaching it as a **trailing message** (a fake tool
+  message, or a Claude Opus 4.8 mid-conversation system message) *after* the cache breakpoint rather
+  than in the system prompt — preserving prompt caching and cutting token cost up to ~2x on long
+  conversations. See [[memory-placement]].
 
 ## Store / Retrieve / Update / Forget
 - **Store:** episodic ingest → autonomous entity + edge extraction into the Context Graph.
@@ -54,3 +59,6 @@ baseline — different metrics/harnesses, not directly comparable. See [[memory-
   Context Graphs, bi-temporal model, fact invalidation, hybrid search, GraphRAG comparison, benchmarks.
 - `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
   — competitor-reported Zep numbers (LoCoMo baseline, token/latency critique).
+- `raw/articles/Where to place agent memory in the prompt to cut token costs up to 2x.md`
+  — Zep's Context Block placement technique (trailing message / Opus 4.8 mid-conversation system
+  message) for prompt-cache-preserving cost savings. See [[memory-placement]].

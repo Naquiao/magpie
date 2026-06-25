@@ -14,6 +14,14 @@ Vector search returns chunks that are *semantically close*; the graph returns ch
 are graph queries — they depend on relationships, not phrasing. A self-maintaining graph also keeps
 memory navigable as it grows, and the structure powers multi-hop reasoning.
 
+A structural side-benefit surfaced in production: in a graph a repeated fact is the *same triple*
+(`user → uses → she/her`), so re-extraction updates a timestamp instead of inserting a new row —
+preventing the mass-duplication that floods pure vector stores (the [[mem0]] audit found **808 copies**
+of one hallucinated fact that paraphrase-dodged a 0.98 cosine gate). The catch: the graph still relies
+on an LLM to extract entities/relations, so a *single* wrong triple still gets in — graph prevents 808
+copies, not the first bad one. Vector search also hits a hard ceiling on temporal queries (P@1 ≤ 33%
+in one evaluation), another reason to add graph traversal. See [[memory-curation]].
+
 ## Variants / approaches
 - **Deterministic, zero-LLM extraction** — [[gbrain]]: every page write extracts entity refs from
   markdown/wikilink/typed-link syntax and writes typed edges (`attended`, `works_at`, `invested_in`,
@@ -53,3 +61,6 @@ memory navigable as it grows, and the structure powers multi-hop reasoning.
   — Mem0ᵍ Neo4j graph: entity/relationship extraction, conflict detection, obsolete-marking.
 - `raw/papers/A-Mem Agentic Memory for LLM Agents.md`
   — Zettelkasten note graph: LLM link generation + memory evolution.
+- `raw/articles/What we found after auditing 10,134 mem0 entries 97.8% were junk · Issue 4573 · mem0aimem0.md`
+  — production argument that graph structure prevents mass deduplication (the 808-copy case) but not
+  single bad triples; vector P@1 ≤ 33% on temporal queries.

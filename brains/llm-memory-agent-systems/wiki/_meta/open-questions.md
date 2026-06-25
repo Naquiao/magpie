@@ -27,6 +27,10 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
   [[vector-rag]] documents *corpus-poisoning* attacks (BadRAG, TrojanRAG) and mitigations from the
   RAG survey. Still missing: poisoning of *agent-written* memory (the Mem0 guardrails/scoring/policies
   the clipping promised) — distinct from poisoning a static retrieval corpus.
+  **Update (audit #4573):** the [[mem0]] audit documents *accidental self-poisoning* — a hallucinated
+  fact recalled into context and re-extracted amplifies into 808 copies — plus security leaks (IPs,
+  chat IDs, config values reaching the store). That's the feedback-loop failure mode; *adversarial*
+  agent-written-memory poisoning is still ungrounded. See [[memory-curation]].
 - **Temporal reasoning at scale is unsolved field-wide** — [[mem0]]'s BEAM 10M results show temporal
   reasoning, event ordering, and multi-session reasoning collapse; fact/entity-level matching isn't
   enough. What representations close this? See [[temporal-knowledge-and-decay]].
@@ -49,6 +53,19 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
 - **Agent-memory write-path security.** Beyond corpus poisoning ([[vector-rag]]), the 2026 map points
   to SSGM (stability/safety-governed memory) and memory-security surveys — candidates to ground the
   still-open *agent-written-memory* poisoning gap above.
+- **Storage/extraction quality has no benchmark.** The [[mem0]] audit (#4573) found **97.8%** of
+  10,134 production entries were junk, yet every standard benchmark (LoCoMo/LongMemEval/BEAM) scores
+  end-to-end *recall*, not whether what's stored is worth storing — the audit thread itself calls a
+  community extraction-quality benchmark a gap. Now partially framed by the new [[memory-curation]]
+  page (selective addition + history-based deletion, sourced from Xiong et al. 2025). Related sub-gaps
+  the thread raises: **provenance** is severed once a fact is extracted (can't adjudicate
+  contradictions by recency/reliability), and **recall quality** (right memory at the right time)
+  stays unmeasured even when storage is clean. See [[memory-evaluation]].
+- **Memory placement is a cost lever, not just a correctness one.** [[memory-placement]] (Zep, 2026):
+  putting the fresh memory block in the system prompt breaks prompt caching and re-bills the whole
+  history each turn (~2x cost at 54 turns). Open: how this trades against cache TTL expiry under
+  bursty traffic, and whether trailing placement weakens instruction-following vs. authoritative
+  system-prompt context.
 
 ## Answered (archive)
 - **Mem0 update/forget semantics** (asked 2026-06-24) — answered same day by

@@ -50,8 +50,11 @@ matching) are scored in parallel and fused. See [[hybrid-retrieval]] and [[knowl
   reconciliation, where an LLM tool call chose ADD/UPDATE/DELETE/NOOP per fact — slow and prone to
   destroying context via overwrites/deletes. (Mem0ᵍ instead marks graph edges obsolete.) See
   [[temporal-knowledge-and-decay]].
-- **Forget:** ADD-only deliberately avoids deletion/overwrite to retain history; explicit
-  decay/expiry policies are not described by the current sources.
+- **Forget:** ADD-only avoids deletion/overwrite to retain history. **Memory Decay** (May 2026, per
+  the maintainer in audit #4573) then adds recency-aware ranking — recently-accessed memories get up
+  to a **1.5× boost**, idle ones drift toward **0.3× dampening** — so stale facts are demoted rather
+  than deleted (addressing the "Day 30" problem where current facts get buried under history). See
+  [[temporal-knowledge-and-decay]].
 
 ## Tradeoffs / limits
 - Retrieval quality depends on Mem0's fact extraction; the app trusts what it extracts.
@@ -63,6 +66,24 @@ matching) are scored in parallel and fused. See [[hybrid-retrieval]] and [[knowl
   long-range tasks (temporal reasoning, event ordering, multi-session reasoning at 10M-token scale)
   remain weak — fact- and entity-level matching aren't enough. Managed-platform benchmark numbers
   include proprietary optimizations not in the OSS SDK. See [[memory-evaluation]].
+- **Production extraction quality can be catastrophic (audit #4573, 2026).** A 32-day production
+  audit of **10,134 entries** found **97.8% were junk** (only 38 clean enough to keep as-is). Dominant
+  causes: **boot-file / system-prompt restating** (~53% — the same facts re-extracted every session),
+  heartbeat/cron noise, whole system-architecture dumps stored as "memories," transient task state,
+  and hallucinated user profiles. Swapping the extractor from gemma2:2b to Claude Sonnet 4.6 *barely
+  moved* the junk rate — a stronger model follows the permissive extraction prompt more faithfully, so
+  it extracts *more* indiscriminately ("better models produce more articulate junk"). **The extraction
+  prompt, not the model, is the bottleneck.** See [[memory-curation]].
+- **Feedback-loop amplification is architectural.** Recalled memories are re-injected into context,
+  the extractor sees its own prior output as new input and re-extracts it — one hallucinated "User
+  prefers Vim" multiplied into **808 copies**, and paraphrases slip past the default **0.98 cosine**
+  dedup gate. Community/fork fixes: don't re-extract recalled memories, drop the dedup gate to ~0.90,
+  a NONE-by-default decision prompt, negative few-shot extraction examples, skip `role:"system"`
+  messages before extraction, and a proposed **`REJECT`** fifth decision action.
+- **Lost provenance + unmeasured recall.** Once extracted, a fact loses its link to the source
+  conversation, so contradictions can't be adjudicated by recency/reliability; and all of the above
+  targets *what goes in*, while *recall* quality (does search return the right memory at the right
+  time?) stays largely unmeasured. See [[memory-evaluation]].
 
 ## Maturity (version, adoption, as-of date)
 As-of 2026-06-24: Managed platform (free tier at app.mem0.ai) + **self-hostable via Docker** with an
@@ -73,6 +94,12 @@ earlier 2025 paper reported, on LoCoMo (LLM-as-Judge): Mem0 **66.9** / Mem0ᵍ *
 Zep (66.0), OpenAI memory (52.9) and all RAG configs, and trailing only full-context (72.9) while
 cutting **p95 latency ~91%** (1.44s vs 17.1s) and using ~7K tokens (vs Mem0ᵍ 14K, Zep 600K+). See
 [[memory-evaluation]].
+Per the maintainer (closing audit #4573 in June 2026), two later releases target the audit's gaps:
+**Temporal Reasoning** (June 2026) — every memory carries temporal metadata and a type
+(events / ongoing-states / plans / relationships / preferences / absences), and queries are classified
+by temporal intent and reranked (reported +6.7 on LoCoMo temporal, overall **86.1 → 92.5**) — and
+**Memory Decay** (May 2026, recency-weighted ranking). These post-date and were run separately from the
+April-2026 LoCoMo 91.6 figure above; treat them as distinct self-reported releases.
 
 ## Sources
 - `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
@@ -83,3 +110,6 @@ cutting **p95 latency ~91%** (1.44s vs 17.1s) and using ~7K tokens (vs Mem0ᵍ 1
 - `raw/articles/memory/Memory Poisoning in AI Agents How Bad Inputs Corrupt Agent Memory.md`
   — Mem0 + Next.js build tutorial (title promises "memory poisoning" defenses the body never covers;
   see `_meta/open-questions.md`).
+- `raw/articles/What we found after auditing 10,134 mem0 entries 97.8% were junk · Issue 4573 · mem0aimem0.md`
+  — 32-day production audit (97.8% junk), failure taxonomy, community/fork fixes, and the maintainer's
+  closing response (token-efficient algorithm, Temporal Reasoning June 2026, Memory Decay May 2026).

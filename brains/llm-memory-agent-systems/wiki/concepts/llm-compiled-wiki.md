@@ -18,6 +18,18 @@ A personal-knowledge-base workflow where the LLM, not the human, owns the wiki (
 - **Lint:** periodic LLM health checks — find inconsistencies, impute missing data via web search,
   surface new article candidates.
 
+**Three layers** (Karpathy's gist): **raw sources** (immutable; the LLM reads but never edits — the
+source of truth), **the wiki** (LLM-owned markdown: summaries, entity/concept pages, comparisons,
+synthesis), and **the schema** (a `CLAUDE.md` / `AGENTS.md` that encodes the conventions and workflows
+— the config that makes the LLM a disciplined maintainer rather than a generic chatbot, co-evolved
+over time). The defining claim: the wiki is a **persistent, compounding artifact** — knowledge is
+*compiled once and kept current*, not re-derived per query like [[vector-rag]], so cross-references,
+flagged contradictions, and synthesis already exist before you ask. Two special files navigate it:
+**`index.md`** (a content-oriented catalog, read first on any query) and **`log.md`** (an append-only
+chronological record of ingests/queries/lints). "Obsidian is the IDE; the LLM is the programmer; the
+wiki is the codebase." The idea descends from Vannevar Bush's **Memex** (1945) — associative trails
+between documents — with the LLM finally absorbing the maintenance burden that makes humans abandon wikis.
+
 ## Why it matters for agent memory
 This is the thesis behind this brain (see `BRAIN.md` / `AGENTS.md`). Its central claim is a scale
 argument against [[vector-rag]]: at Karpathy's reported **~100 articles / ~400K words**, an LLM
@@ -29,6 +41,10 @@ reading auto-maintained index + summary files beats standing up a vector store �
   `sources.md`, viewed in Obsidian as the "IDE."
 - **Productized / outgrown-files:** [[gbrain]] — the same compile→query→consolidate loop, but backed
   by Postgres hybrid retrieval + a self-wiring graph + a dream cycle once you pass ~hundreds of docs.
+- **Standardized / portable:** [[open-knowledge-format]] (Google Cloud OKF) turns the same
+  markdown+frontmatter+cross-links shape into a vendor-neutral spec so bundles interoperate across
+  producers and agents. Optional tooling at scale: a local hybrid-search CLI/MCP over the markdown
+  (e.g. `qmd` — BM25 + vector + LLM rerank) for when plain `index.md` retrieval outgrows itself.
 
 ## Open questions
 - **Where does the plain-wiki approach stop beating RAG?** (docs? tokens? query type? — the standing
@@ -37,5 +53,8 @@ reading auto-maintained index + summary files beats standing up a vector store �
   weights rather than context — the [[in-weights-vs-in-context]] frontier.
 
 ## Sources
-- `raw/articles/memory/Andrej Karpathy on X "LLM Knowledge Bases...".md`
-  — the raw→compile→ask→lint→output loop, Obsidian-as-IDE, the ~100-article / 400K-word scale claim.
+- `raw/articles/llm-wiki - Karpathy.md` — Karpathy's full LLM-wiki gist: the three-layer architecture
+  (raw / wiki / schema), ingest/query/lint operations, `index.md` vs `log.md`, optional `qmd` search,
+  the Memex lineage, and the "compiled-once, kept-current" compounding thesis.
+- `raw/articles/memory/karpathy-tweet-llm-knowledge.md` — Karpathy's tweet pointing to the gist: the
+  raw→compile→ask→lint→output loop, Obsidian-as-IDE, and the ~100-article / ~400K-word scale claim vs RAG.

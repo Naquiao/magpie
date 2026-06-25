@@ -42,10 +42,15 @@ the project's open question on contradicting facts (see `_meta/open-questions.md
   systems. (The [[mem0]] paper, a competitor, reports Zep strong on open-domain LoCoMo J 76.6 but
   using 600K+ graph tokens with slow async construction — a rival's measurement.)
 - **Forgetting curves** — MemoryBank (AAAI 2024) decays memories on an Ebbinghaus schedule (see
-  [[memory-consolidation]]).
+  [[memory-consolidation]]). [[mem0]]'s **Memory Decay** (May 2026) is a lighter recency-weighted
+  variant: recently-accessed memories get up to a 1.5× ranking boost, idle ones drift toward 0.3×.
+- **Utility-based (history) deletion** — Xiong et al. 2025: prune memories with persistently *low
+  output utility* ("misaligned experience replay") — a forgetting rule driven by demonstrated
+  usefulness rather than age. Beat add-all and other deletion policies on long-horizon agent tasks;
+  the write-side counterpart to time-based decay. See [[memory-curation]].
 
 ## Which systems use it
-- [[mem0]] — ADD-only history. [[letta]] — git-versioned history. [[gbrain]] — contradiction/staleness flags.
+- [[mem0]] — ADD-only history + recency-weighted decay (May 2026). [[letta]] — git-versioned history. [[gbrain]] — contradiction/staleness flags.
 
 ## Open questions
 - **How does each system handle contradicting facts and staleness** (compiled-truth + timeline vs
@@ -66,3 +71,8 @@ the project's open question on contradicting facts (see `_meta/open-questions.md
   — Zep temporal KG, MemoryBank forgetting curve, in-context-editing-beats-parameter-editing.
 - `raw/papers/Mem0 Building Production-Ready AI Agents with Scalable Long-Term Memory.md`
   — Mem0ᵍ obsolete-marking for temporal reasoning; competitor-reported Zep numbers.
+- `raw/articles/Smarter Memories, Stronger Agents How Selective Recall Boosts LLM Performance.md`
+  — history-based deletion as utility-driven forgetting (Xiong et al. 2025). See [[memory-curation]].
+- `raw/articles/What we found after auditing 10,134 mem0 entries 97.8% were junk · Issue 4573 · mem0aimem0.md`
+  — Mem0's Temporal Reasoning (June 2026) and Memory Decay (May 2026) per the maintainer; the "no
+  temporal model" critique that motivated them.

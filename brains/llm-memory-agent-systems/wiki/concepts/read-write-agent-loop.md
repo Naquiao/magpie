@@ -7,7 +7,8 @@ memory store for relevant facts before the LLM call, then write new facts back a
 A per-turn cycle wrapped around an LLM generation call:
 1. Validate the request (e.g. messages + a stable user identifier).
 2. **Search** the memory store for facts relevant to the user's latest message.
-3. **Inject** those facts into the system prompt as context.
+3. **Inject** those facts into the prompt as context — and *where* in the prompt is itself a cost
+   decision (system prompt vs. trailing message); see [[memory-placement]].
 4. **Generate** the response with the LLM.
 5. **Store** the full interaction back so its facts are retrievable later.
 
@@ -30,6 +31,9 @@ problem this loop solves.
   its ~100–200ms overlaps other work.
 - **Scoping:** every read and write carries a stable identifier (e.g. `user_id`) drawn from the auth
   layer so memory is isolated per user.
+- **Write-time quality gate:** the store step shouldn't blindly append. Filtering/scoring before
+  storage — and *not* re-extracting recalled memories (which otherwise amplify into feedback loops) —
+  is what separates a useful store from 97.8% junk. See [[memory-curation]] and the [[mem0]] audit.
 
 ## Which systems use it
 - [[mem0]] — implements this loop directly with `mem0.search()` (before the LLM call) and
@@ -54,6 +58,9 @@ and [[memory-evaluation]].
   `_meta/open-questions.md` on staleness/contradiction handling.)
 - When does injecting retrieved facts into the prompt expose the loop to **memory poisoning** from
   untrusted inputs? (The source's title raises this but its body never addresses it.)
+- Should the **store** step gate what it writes (quality scoring, a `REJECT` action) rather than
+  append everything? Real-world data says yes — indiscriminate storage underperforms no memory at all.
+  See [[memory-curation]].
 
 ## Sources
 - `raw/articles/memory/Memory Poisoning in AI Agents How Bad Inputs Corrupt Agent Memory.md`
@@ -64,3 +71,6 @@ and [[memory-evaluation]].
   et al. 2023) — memory stream + recency/importance/relevance retrieval + reflection.
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — Thread 4: write–manage–read loop surveys, Generative Agents, A-MEM, Memory-R1.
+- `raw/articles/What we found after auditing 10,134 mem0 entries 97.8% were junk · Issue 4573 · mem0aimem0.md`
+  — the store/extract step as the pipeline bottleneck: feedback-loop amplification (recalled memories
+  re-extracted) and the case for a write-time gate. See [[memory-curation]].

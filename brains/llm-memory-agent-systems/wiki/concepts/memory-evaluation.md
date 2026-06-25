@@ -14,6 +14,11 @@ cost without proving the memory layer got better. Smaller benchmarks (LoCoMo, Lo
 materially gameable this way; larger-scale benchmarks are harder to fake and better reflect
 production. Good evaluation is how you tell a real memory improvement from a bigger prompt.
 
+A second blind spot: every standard benchmark scores **end-to-end recall** (did the right answer come
+out?), not **what gets stored** in the first place. A pipeline can pass LoCoMo while writing 97.8%
+junk to its store (the [[mem0]] audit #4573) — extraction/storage quality is essentially unmeasured by
+public benchmarks, and that hand audit may be the only existing public data point on it. See [[memory-curation]].
+
 ## Variants / approaches (benchmarks)
 - **LoCoMo** — single-hop, multi-hop, open-domain, temporal recall across conversational sessions.
 - **LongMemEval** — single/multi-session, knowledge updates, temporal reasoning. Also runnable in
@@ -50,6 +55,9 @@ production. Good evaluation is how you tell a real memory improvement from a big
   10M-scale numbers expose that temporal reasoning, event ordering, and multi-session reasoning are
   unsolved across the field.
 - Cross-system numbers aren't directly comparable (different corpora, self-reported, ±1pt judge noise).
+- **Storage/extraction quality is unbenchmarked.** Benchmarks measure recall, not whether stored
+  memories are worth storing; the [[mem0]] audit (97.8% junk) had to be done by hand. A community
+  extraction-quality benchmark is an open gap the audit thread itself flags. See [[memory-curation]].
 
 ## Sources
 - `raw/articles/memory/Introducing The Token-Efficient Memory Algorithm.md`
@@ -62,3 +70,5 @@ production. Good evaluation is how you tell a real memory improvement from a big
   — LoCoMo head-to-head (Mem0/Mem0ᵍ vs Zep/OpenAI/RAG/full-context) on F1/BLEU-1/LLM-as-Judge + latency.
 - `raw/papers/A-Mem Agentic Memory for LLM Agents.md`
   — LoCoMo + DialSim results vs MemGPT/MemoryBank/ReadAgent across six foundation models.
+- `raw/articles/What we found after auditing 10,134 mem0 entries 97.8% were junk · Issue 4573 · mem0aimem0.md`
+  — benchmarks measure end-to-end retrieval, not storage quality; a hand audit as the rare data point.

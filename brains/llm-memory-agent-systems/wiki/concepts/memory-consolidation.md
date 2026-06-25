@@ -32,10 +32,14 @@ answers. Running it offline keeps the latency-sensitive request path cheap.
 - **Memory evolution** — [[a-mem]]: adding a new note triggers the LLM to **rewrite the attributes
   (context/keywords/tags) of linked existing notes** — consolidation as a continuous side-effect of
   writing, not a separate batch pass.
+- **Scheduled cross-session synthesis** — [[claude-memory]]: a background pass every **24h** summarizes
+  conversations and synthesizes key insights across the user's whole chat history into a memory
+  summary injected into each new conversation (per-project summaries kept separate).
 
 ## Which systems use it
 - [[gbrain]] — cron dream cycle. [[letta]] — sleep-time reflection + defragmentation.
   [[mem0]] — async extraction/retrieval. [[a-mem]] — write-triggered memory evolution.
+  [[claude-memory]] — 24h cross-session memory synthesis.
 
 ## Open questions
 - How aggressive should consolidation be before it destroys recoverable detail? (Letta's ADD-then-
@@ -55,3 +59,5 @@ answers. Running it offline keeps the latency-sensitive request path cheap.
 - `raw/papers/Generative Agents Interactive Simulacra of Human Behavior.md` — reflection synthesizes
   higher-level insights; ablation showed it is critical to believable behavior.
 - `raw/papers/A-Mem Agentic Memory for LLM Agents.md` — memory evolution (new notes update old ones).
+- `raw/articles/Use Claude’s chat search and memory to build on previous context.md`
+  — Claude's 24h memory synthesis across chat history. See [[claude-memory]].

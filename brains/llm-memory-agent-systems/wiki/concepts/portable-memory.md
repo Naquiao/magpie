@@ -33,6 +33,9 @@ auditable and editable. It is the portability lens on [[context-vs-retrieval]] a
   structure, re-embedded locally for retrieval; see [[knowledge-graphs-for-memory]], [[vector-rag]].
 - **Git repo as portable substrate:** markdown-in-git ([[llm-compiled-wiki]], [[gbrain]]) moves with
   the project across machines and clients.
+- **Standardized portable format (OKF):** [[open-knowledge-format]] turns the at-rest knowledge into a
+  vendor-neutral markdown+frontmatter spec — the on-disk complement to MCP's transport, so a bundle
+  written by one producer is consumable by any agent without translation.
 - **Raw-vector store (limited):** acceptable *only* if a single target model and a stable embedding
   provider are guaranteed — otherwise the index is non-portable.
 - **Weight editing (non-portable):** reserve for single-model, bounded-edit research use.
@@ -41,6 +44,8 @@ auditable and editable. It is the portability lens on [[context-vs-retrieval]] a
 - [[gbrain]] — markdown-in-git system of record + MCP server (30+ tools), re-embeds into Postgres.
 - [[letta]] — MCP connectors over a git-backed memory filesystem.
 - [[mem0]] — model-agnostic text-fact store; ships an MCP/OpenMemory surface for cross-tool memory.
+- [[claude-memory]] — ships experimental **memory import/export between Claude and other AI tools**,
+  the portability thesis productized for a consumer assistant.
 
 ## Open questions
 - **Embedding-space standardization** would shrink the portability penalty of vector stores — does it
@@ -51,3 +56,7 @@ auditable and editable. It is the portability lens on [[context-vs-retrieval]] a
 - `raw/articles/memory/LLM Memory and Knowledge: A 2025–2026 Research Map Across Four Threads.md`
   — "Implications for Portable, Model-Agnostic Memory": embeddings non-portable, weight editing
   non-portable, MCP as the model-agnostic integration layer, text-store + MCP design recommendation.
+- `raw/articles/How the Open Knowledge Format can improve data sharing.md`
+  — OKF: a vendor-neutral, portable knowledge format, the at-rest complement to MCP. See [[open-knowledge-format]].
+- `raw/articles/Use Claude’s chat search and memory to build on previous context.md`
+  — Claude's experimental cross-tool memory import/export. See [[claude-memory]].
