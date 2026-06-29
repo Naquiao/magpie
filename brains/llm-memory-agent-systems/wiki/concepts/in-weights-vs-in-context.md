@@ -59,7 +59,8 @@ The locus of knowledge determines the properties an agent memory system lives or
   without degradation is still open.
 
 ## Sources
-- `raw/papers/2002.08910.md` (PDF: `raw/papers/2002.08910.pdf`) — Roberts, Raffel & Shazeer (2020),
-  "How Much Knowledge Can You Pack Into the Parameters of a Language Model?": closed-book QA scales
-  with model size, is competitive with retrieval systems, but is expensive, uninterpretable, and
-  hard to update.
+- Roberts, Raffel & Shazeer (2020), "How Much Knowledge Can You Pack Into the Parameters of a
+  Language Model?" — arXiv [2002.08910](https://arxiv.org/abs/2002.08910) (EMNLP 2020): closed-book
+  QA scales with model size, is competitive with retrieval systems, but is expensive, uninterpretable,
+  and hard to update. *(The local `raw/papers/2002.08910.{md,pdf}` capture was removed from `raw/`;
+  the claims above are retained against the arXiv source — see `_meta/log.md` 2026-06-29 lint.)*

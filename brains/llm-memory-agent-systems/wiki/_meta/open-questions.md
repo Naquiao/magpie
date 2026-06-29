@@ -47,9 +47,6 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
   [[zep]] self-reports **94.7% accuracy**; the [[mem0]] paper scores Zep at **LLM-as-Judge ~66**.
   Need a neutral, single-harness evaluation across [[mem0]]/[[zep]]/[[a-mem]]/[[letta]] before
   trusting any ranking. See [[memory-evaluation]].
-- **LINT — removed source.** `papers/2002.08910.md` (Roberts et al. 2020, closed-book QA) was deleted
-  from `raw/` but is still cited by [[in-weights-vs-in-context]] and `sources.md`. The claims remain
-  arXiv-citable; decide whether to keep (re-citing arXiv) or prune. Left intact pending a call.
 - **Agent-memory write-path security.** Beyond corpus poisoning ([[vector-rag]]), the 2026 map points
   to SSGM (stability/safety-governed memory) and memory-security surveys — candidates to ground the
   still-open *agent-written-memory* poisoning gap above.
@@ -66,8 +63,28 @@ Maintained by the compiler during `lint`, and by you whenever something nags.
   history each turn (~2x cost at 54 turns). Open: how this trades against cache TTL expiry under
   bursty traffic, and whether trailing placement weakens instruction-following vs. authoritative
   system-prompt context.
+- **LINT 2026-06-29 — verify a borderline editing claim.** [[model-editing]] states KnowledgeEditor
+  (De Cao et al. 2021) "updates concentrate on surprisingly few components." The local raw capture is
+  an abstract-only stub and neither it nor the 2025–2026 research map clearly supports the *few
+  components* claim. Check against arXiv [2104.08164](https://arxiv.org/abs/2104.08164) and either
+  ground it or soften the wording.
+- **LINT 2026-06-29 — re-verify system version/benchmark currency (needs-verification, web-sourced).**
+  A web pass during lint returned inconsistent results, so nothing was changed. Re-check against the
+  vendors' own changelogs: [[mem0]] SDK pin (`^2.1.40`) and its LoCoMo/LongMemEval/BEAM numbers,
+  [[zep]] benchmark numbers, and [[gbrain]]'s version (`v0.41.22` could not be confirmed; one source
+  suggested `v0.38.x`). Update the affected Maturity blocks once a primary source confirms each fact.
+- **LINT 2026-06-29 — two comparison pages are now ripe to draft.** All underlying system pages +
+  sources now exist for (a) a Store/Retrieve/Update/Forget comparison across
+  [[mem0]]/[[letta]]/[[gbrain]]/[[zep]] and (b) a contradiction-&-staleness handling comparison —
+  both long-listed above. Promote them from "candidate" to a `wiki/comparisons/*.md` draft (via an
+  `evolve`/`ask`, not a lint run).
 
 ## Answered (archive)
+- **LINT — removed source `2002.08910`** (raised by lint; resolved 2026-06-29) — `raw/papers/2002.08910.{md,pdf}`
+  (Roberts et al. 2020, closed-book QA) had been deleted from `raw/` but was still cited by
+  [[in-weights-vs-in-context]] and `sources.md`. **Decision: keep, re-cite arXiv** — the claims are
+  well-established and arXiv-citable. The page's `## Sources` now points at arXiv
+  [2002.08910](https://arxiv.org/abs/2002.08910) and the dead path was dropped from `sources.md`.
 - **Mem0 update/forget semantics** (asked 2026-06-24) — answered same day by
   `Introducing The Token-Efficient Memory Algorithm.md`: Mem0 uses **single-pass ADD-only**
   extraction — every fact is an independent record, changed facts coexist with old ones (no
