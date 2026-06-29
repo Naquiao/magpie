@@ -36,8 +36,9 @@ penalty. It contrasts with how the in-context camp handles change in
   model; a *non-parametric* editor that doesn't touch base weights.
 - **Neuron manipulation** (knowledge neurons) — directly tweak fact-bearing neurons.
 - **Null-space editing** (**AlphaEdit**, ICLR 2025 Outstanding Paper) — project updates onto the null
-  space of preserved-knowledge keys; current strongest sequential-editing approach (reportedly
-  retains ~98% of general ability after 3,000 edits), a plug-and-play boost to ROME/MEMIT.
+  space of preserved-knowledge keys; the strongest sequential-editing approach as of the 2025–2026
+  research map (reportedly retains ~98% of general ability after 3,000 edits), a plug-and-play boost
+  to ROME/MEMIT.
 
 ## The wall at scale (2024–2026)
 Per the 2025–2026 research map, knowledge editing **has hit a wall at lifelong scale**:
